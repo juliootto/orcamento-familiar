@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import br.com.julio.orcamento.modelo.Categoria;
 import br.com.julio.orcamento.modelo.Orcamento;
 import br.com.julio.orcamento.modelo.TipoOrcamento;
 import br.com.julio.orcamento.repository.OrcamentoRepository;
@@ -22,6 +23,7 @@ public class OrcamentoForm {
 	private BigDecimal valor;
 	@NotNull
 	private Date data;
+	private String categoria;
 
 	public String getDescricao() {
 		return descricao;
@@ -47,9 +49,21 @@ public class OrcamentoForm {
 		this.data = data;
 	}
 
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+	
+	public String getCategoria() {
+		return categoria;
+	}
+	
 	public Orcamento converter(TipoOrcamentoRepository tipoOrcamentoRepository, String nomeTipoOrcamento) {
 		TipoOrcamento tipoOrcamento = tipoOrcamentoRepository.findBydescricao(nomeTipoOrcamento);
-		return new Orcamento(this.descricao, this.valor, this.data, tipoOrcamento);
+		//System.out.println("categoria: " + this.categoria);
+		if(this.categoria==null) {
+			return new Orcamento(this.descricao, this.valor, this.data, tipoOrcamento);
+		}
+		return new Orcamento(this.descricao, this.valor, this.data, tipoOrcamento,new Categoria(this.categoria));
 	}
 
 	public boolean verificaOrcamentoNoMes(OrcamentoRepository orcamentoRepository, String nomeTipoOrcamento) {

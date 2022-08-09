@@ -33,4 +33,8 @@ public interface OrcamentoRepository extends JpaRepository<Orcamento, Long> {
 	List<Orcamento> findByIdNotAndDescricaoAndDataBetweenAndTipoOrcamento_descricao(@NotEmpty @NotNull Long id,
 			@NotEmpty @NotNull String descricao, Date firstDay, Date lastDay, String nomeTipoOrcamento);
 
+	List<Orcamento> findByDescricaoAndTipoOrcamento_descricao(String descricao,String tipoOrcamentoDescricao);
+	
+	List<Orcamento> findByDataBetweenAndTipoOrcamento_descricao( Date firstDay, Date lastDay, String nomeTipoOrcamento);
+
 }

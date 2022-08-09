@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import br.com.julio.orcamento.modelo.Categoria;
 import br.com.julio.orcamento.modelo.Orcamento;
 import br.com.julio.orcamento.modelo.TipoOrcamento;
 import br.com.julio.orcamento.repository.OrcamentoRepository;
@@ -24,6 +25,7 @@ public class AtualizarOrcamentoForm {
 	private BigDecimal valor;
 	@NotNull
 	private Date data;
+	private String categoria;
 	
 	public String getDescricao() {
 		return descricao;
@@ -44,9 +46,16 @@ public class AtualizarOrcamentoForm {
 		this.data = data;
 	}
 	
+	public String getCategoria() {
+		return categoria;
+	}
+	
 	public Orcamento converter(TipoOrcamentoRepository tipoOrcamentoRepository ,String nomeTipoOrcamento) {
 		TipoOrcamento tipoOrcamento = tipoOrcamentoRepository.findBydescricao(nomeTipoOrcamento);
-		return new Orcamento(this.descricao,this.valor,this.data,tipoOrcamento);
+		if(this.categoria==null) {
+			return new Orcamento(this.descricao, this.valor, this.data, tipoOrcamento);
+		}
+		return new Orcamento(this.descricao, this.valor, this.data, tipoOrcamento,new Categoria(this.categoria));
 	}
 	
 	public Orcamento atualizar(Long id, OrcamentoRepository orcamentoRepository) {
@@ -56,6 +65,10 @@ public class AtualizarOrcamentoForm {
         	orcamento.get().setDescricao(this.descricao);
         	orcamento.get().setValor(this.valor);
         	orcamento.get().setData(this.data);
+        	if(this.categoria != null) {
+        		orcamento.get().setCategoria(new Categoria(this.categoria));	
+        	}
+        	
             return orcamento.get();
         }
         return null;
@@ -67,17 +80,17 @@ public class AtualizarOrcamentoForm {
 		Date firstDay = Date.valueOf(this.getData().toLocalDate().with(TemporalAdjusters.firstDayOfMonth()));
 		Date lastDay = Date.valueOf(this.getData().toLocalDate().with(TemporalAdjusters.lastDayOfMonth()));
 		
-		System.out.println("this.id = "+ this.id + " idParam = " + idParam + 
+		/*System.out.println("this.id = "+ this.id + " idParam = " + idParam + 
 				" descricao = " + this.descricao + " primeiroDia = " + firstDay + " ultimoDia = " + lastDay + 
-				" nomeTipoOrcamento = " + nomeTipoOrcamento);
+				" nomeTipoOrcamento = " + nomeTipoOrcamento);*/
 		List<Orcamento> orcamento = orcamentoRepository
 				.findByIdNotAndDescricaoAndDataBetweenAndTipoOrcamento_descricao(idParam,this.descricao, firstDay, lastDay,nomeTipoOrcamento);
 
 		if (!orcamento.isEmpty()) {
-			System.out.println("true");
+			//System.out.println("true");
 			return true;
 		}
-		System.out.println("False");
+		//System.out.println("False");
 		return false;
 	}
 	
