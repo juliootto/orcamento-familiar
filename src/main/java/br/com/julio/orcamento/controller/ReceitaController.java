@@ -55,14 +55,15 @@ public class ReceitaController {
 
 	}
 
-	/*@GetMapping
-	public List<OrcamentoDto> lista() {
-
-		List<Orcamento> orcamentos = receitaRepository
-				.findByTipoOrcamento_descricao(NomeTipoOrcamento.RECEITA.getDescricao());
-		return OrcamentoDto.converter(orcamentos);
-
-	}*/
+	/*
+	 * @GetMapping public List<OrcamentoDto> lista() {
+	 * 
+	 * List<Orcamento> orcamentos = receitaRepository
+	 * .findByTipoOrcamento_descricao(NomeTipoOrcamento.RECEITA.getDescricao());
+	 * return OrcamentoDto.converter(orcamentos);
+	 * 
+	 * }
+	 */
 
 	@GetMapping("/{id}")
 	public List<OrcamentoDto> buscaPorId(@PathVariable Long id) {
@@ -70,15 +71,15 @@ public class ReceitaController {
 				NomeTipoOrcamento.RECEITA.getDescricao());
 		return OrcamentoDto.converter(orcamentos);
 	}
-	
+
 	@GetMapping("/{ano}/{mes}")
-	public List<OrcamentoDto> buscaPorAnoMes(@PathVariable int ano,@PathVariable int mes ) {
+	public List<OrcamentoDto> buscaPorAnoMes(@PathVariable int ano, @PathVariable int mes) {
 		LocalDate dia = LocalDate.of(ano, mes, 1);
 		System.out.println(dia);
 		Date firstDay = Date.valueOf(dia.with(TemporalAdjusters.firstDayOfMonth()));
 		Date lastDay = Date.valueOf(dia.with(TemporalAdjusters.lastDayOfMonth()));
 
-		List<Orcamento> orcamentos = receitaRepository.findByDataBetweenAndTipoOrcamento_descricao(firstDay,lastDay,
+		List<Orcamento> orcamentos = receitaRepository.findByDataBetweenAndTipoOrcamento_descricao(firstDay, lastDay,
 				NomeTipoOrcamento.RECEITA.getDescricao());
 		return OrcamentoDto.converter(orcamentos);
 	}
@@ -103,7 +104,9 @@ public class ReceitaController {
 	@Transactional
 	public ResponseEntity<OrcamentoDto> atualizar(@PathVariable Long id,
 			@RequestBody @Valid AtualizarOrcamentoForm form, UriComponentsBuilder uriBuilder) {
+		
 		Orcamento orcamento = form.atualizar(id, receitaRepository);
+		
 		if (Objects.nonNull(orcamento)) {
 			if (!form.verificaOrcamentoNoMes(receitaRepository, id, NomeTipoOrcamento.RECEITA.getDescricao())) {
 				return ResponseEntity.ok(new OrcamentoDto(orcamento));
